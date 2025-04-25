@@ -1,0 +1,177 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>중간고사 시간표</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Nanum Gothic', sans-serif;
+      background-color: #111;
+      color: white;
+    }
+    body {
+      padding: 10px 30px;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+    .title {
+      margin-top: 30px;
+      text-align: center;
+      font-size: clamp(2rem, 4vw, 4.5rem);
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .title input {
+      width: 100px;
+      height: 65px;
+      font-size: clamp(2rem, 4vw, 4.5rem);
+      text-align: center;
+      border: 2px solid white;
+      box-sizing: border-box;
+    }
+    .clock {
+      text-align: center;
+      font-size: clamp(3rem, 6vw, 7rem);
+      font-weight: bold;
+      color: blue;
+      margin-bottom: 20px;
+    }
+    .main-layout {
+      display: flex;
+      justify-content: space-between;
+      gap: 100px; /* increased gap between columns */
+    }
+    .left-section {
+      flex: 1;
+      margin-left: 40px;
+    }
+    .right-section {
+      flex: 1;
+    }
+    .left-section .entry {
+      margin-bottom: 30px;
+    }
+    .entry-line {
+      display: flex;
+      font-size: clamp(1.5rem, 3vw, 3.5rem);
+      font-weight: bold;
+      align-items: baseline;
+    }
+    .entry-line .label {
+      min-width: 160px;
+    }
+    .entry-line .time {
+      min-width: 600px;
+    }
+    .left-section .entry-box {
+      margin-top: 10px;
+      margin-left: 160px; /* align with time text */
+      width: 600px;       /* match time text width */
+      height: 65px;
+      border: 2px solid white;
+      font-size: clamp(1.5rem, 3vw, 3.5rem);
+      text-align: center;
+      box-sizing: border-box;
+    }
+    .right-section .row {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      margin-bottom: 25px;
+      padding-left: 20px;
+    }
+    .right-section .label {
+      font-weight: bold;
+      font-size: clamp(1.5rem, 2.5vw, 2.8rem);
+      margin-right: 10px;
+      width: 100px;
+    }
+    .right-section .input-box {
+      height: 65px;
+      border: 2px solid white;
+      font-size: clamp(1.5rem, 2.5vw, 2.8rem);
+      text-align: center;
+      box-sizing: border-box;
+    }
+    .right-section .input-box.short {
+      width: 200px;
+    }
+    .right-section .input-box.long {
+      width: 360px;
+    }
+  </style>
+</head>
+<body>
+  <div class="title">
+    중간고사 <input type="text" /> 일차
+  </div>
+
+  <div class="clock" id="clock">-- : -- : --</div>
+
+  <div class="main-layout">
+    <div class="left-section">
+      <div class="entry">
+        <div class="entry-line">
+          <div class="label">1교시</div>
+          <div class="time">08:00 ~ 08:40분 (40분)</div>
+        </div>
+        <input type="text" class="entry-box" />
+      </div>
+      <div class="entry">
+        <div class="entry-line">
+          <div class="label">2교시</div>
+          <div class="time">09:00 ~ 09:50분 (50분)</div>
+        </div>
+        <input type="text" class="entry-box" />
+      </div>
+      <div class="entry">
+        <div class="entry-line">
+          <div class="label">3교시</div>
+          <div class="time">10:10 ~ 10:30분 (20분)</div>
+        </div>
+        <input type="text" class="entry-box" />
+      </div>
+      <div class="entry">
+        <div class="entry-line">
+          <div class="label">4교시</div>
+          <div class="time">10:50 ~ 11:40분 (50분)</div>
+        </div>
+        <input type="text" class="entry-box" />
+      </div>
+    </div>
+
+    <div class="right-section">
+      <div class="row">
+        <div class="label">재적</div>
+        <input type="text" class="input-box short" />
+      </div>
+      <div class="row">
+        <div class="label">응시</div>
+        <input type="text" class="input-box short" />
+      </div>
+      <div class="row">
+        <div class="label">결시</div>
+        <input type="text" class="input-box long" />
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function updateClock() {
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      const time = `${hours} : ${minutes} : ${seconds}`;
+      document.getElementById("clock").textContent = time;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+  </script>
+</body>
+</html>
