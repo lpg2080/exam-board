@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>내신고사 시간표</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@700&display=swap" rel="stylesheet">
+  <style>
+    /* Base styles */
+    body {
+      margin: 0;
+      padding: 20px 40px;
+      font-family: 'Nanum Gothic', sans-serif;
+      background-color: #111;
+      color: white;
+      font-size: 14px;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+    .clock {
+      margin-top: 3px;
+      margin-bottom: 32px;
+      font-size: 80px;
+      color: yellow;
+      font-weight: 700;
+      text-align: center;
+    }
+    .container {
+      display: table;
+      width: 100%;
+      table-layout: fixed;
+    }
+    .column {
+      display: table-cell;
+      vertical-align: top;
+    }
+    .left {
+      width: 60%;
+    }
+    .right {
+      width: 40%;
+      padding-left: 10px;
+    }
+    .entry {
+      margin-bottom: 10px;
+    }
+    .entry .label {
+      font-weight: 700;
+      display: inline-block;
+      width: 100px;
+      font-size: 30px;
+      padding-left: 90px;
+    }
+    .entry .time {
+      font-size: 30px;
+    }
+    .entry input {
+      display: block;
+      width: 310px;
+      height: 34px;
+      font-size: 30px;
+      font-weight: 700;
+      margin-top: 10px;
+      margin-left: 200px;
+      border: 1px solid white;
+      background-color: #222;
+      color: white;
+      text-align: center;
+    }
+
+    /* Right column rows */
+    .row {
+      margin-bottom: 20px;
+      white-space: nowrap;
+    }
+    .row .label {
+      font-weight: 700;
+      display: inline-block;
+      width: 120px;
+      font-size: 30px;
+    }
+    .row input {
+      height: 36px;
+      font-size: 30px;
+      font-weight: 700;
+      border: 2px solid white;
+      background-color: #222;
+      color: yellow;
+      text-align: center;
+      margin-left: 6px;
+    }
+    .row .long { width: 180px; }
+    .row .short { width: 80px; }
+
+    /* Four small inputs under '결시' */
+    .row.small-inputs {
+      white-space: nowrap;
+      margin-left: 0;
+      margin-bottom: 10px;
+    }
+    .row.small-inputs input {
+      width: 50px;
+      height: 36px;
+      margin-right: 20px;
+      font-size: 30px;
+      font-weight: 700;
+      border: 2px solid white;
+      background-color: #222;
+      color: yellow;
+      text-align: center;
+    }
+    .row.small-inputs input:last-child {
+      margin-right: 0;
+    }
+
+    /* Adjusted ⵗ row with individual right offsets */
+    .row.tildes {
+      white-space: nowrap;
+      margin-left: 0;
+      font-size: 30px;
+      margin-top: -6px;
+      margin-bottom: 5px;
+    }
+
+    .column.right > .row:nth-of-type(3) {
+      margin-bottom: 40px;  /* 원하는 간격으로 조정 */
+    }
+    .row.tildes .tilde {
+      display: inline-block;
+      width: 50px;
+      height: 36px;
+      line-height: 36px;
+      text-align: center;
+      color: white;
+      position: relative;
+      margin-right: 20px;
+    }
+    .row.tildes .tilde:nth-child(1) { left: 13px; }
+    .row.tildes .tilde:nth-child(2) { left: 27px; }
+    .row.tildes .tilde:nth-child(3) { left: 40px; }
+    .row.tildes .tilde:nth-child(4) { left: 50px; }
+  </style>
+</head>
+<body>
+  <div class="clock" id="clock">Loading...</div>
+  <div class="container">
+    <div class="column left">
+      <div class="entry">
+        <span class="label">1교시</span>
+        <span class="time">08:00 ~ 08:40분 (40분)</span>
+        <input type="text" />
+      </div>
+      <div class="entry">
+        <span class="label">2교시</span>
+        <span class="time">09:00 ~ 09:50분 (50분)</span>
+        <input type="text" style="color: yellow;" />
+      </div>
+      <div class="entry">
+        <span class="label">3교시</span>
+        <span class="time">10:10 ~ 10:30분 (20분)</span>
+        <input type="text" />
+      </div>
+      <div class="entry">
+        <span class="label">4교시</span>
+        <span class="time">10:50 ~ 11:40분 (50분)</span>
+        <input type="text" style="color: yellow;" />
+      </div>
+    </div>
+    <div class="column right">
+      <div class="row"><span class="label">• 재적</span><input type="text" class="short" /></div>
+      <div class="row"><span class="label">• 응시</span><input type="text" class="short" /></div>
+      <div class="row"><span class="label">• 결시</span><input type="text" class="long" /></div>
+      <div class="row"><span class="label">[자리배치]</span></div>
+      <div class="row small-inputs"><input type="text" /><input type="text" /><input type="text" /><input type="text" /></div>
+      <div class="row tildes"><span class="tilde">ⵗ</span><span class="tilde">ⵗ</span><span class="tilde">ⵗ</span><span class="tilde">ⵗ</span></div>
+      <div class="row small-inputs"><input type="text" /><input type="text" /><input type="text" /><input type="text" /></div>
+
+    </div>
+  </div>
+  <script>
+    var serverBaseTime, clientStartTime;
+    function fetchServerTime() {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET','https://us-central1-exam-clock-server.cloudfunctions.net/getTime',true);
+      xhr.onreadystatechange = function(){
+        if(xhr.readyState===4 && xhr.status===200){
+          try {
+            var resp = JSON.parse(xhr.responseText), p = resp.time.split(":");
+            var now = new Date(); now.setHours(+p[0]); now.setMinutes(+p[1]); now.setSeconds(+p[2]);
+            serverBaseTime = now.getTime(); clientStartTime = Date.now();
+            updateClock(); setInterval(updateClock,1000);
+          } catch(e) {
+            console.error("Parsing failed", e);
+            document.getElementById("clock").textContent = "-- : -- : --";
+          }
+        }
+      };
+      xhr.onerror = function() {
+        document.getElementById("clock").textContent = "-- : -- : --";
+      };
+      xhr.send();
+    }
+    function updateClock() {
+      if(!serverBaseTime||!clientStartTime) return;
+      var now = new Date(serverBaseTime + (Date.now() - clientStartTime));
+      var h = ("0"+now.getHours()).slice(-2),
+          m = ("0"+now.getMinutes()).slice(-2),
+          s = ("0"+now.getSeconds()).slice(-2);
+      document.getElementById("clock").textContent = h + " : " + m + " : " + s;
+    }
+    fetchServerTime();
+  </script>
+</body>
+</html>
